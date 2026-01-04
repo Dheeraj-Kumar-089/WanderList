@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import toast from "react-hot-toast";
 gsap.registerPlugin(ScrollTrigger);
+import API from "../api";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:8080/api/auth/logout", { withCredentials: true });
+      await API.get("/auth/logout", { withCredentials: true });
       setCurrUser(null);
       setIsMenuOpen(false);
       toast.success("Logged out. See you soon!", { icon: '🚶' });

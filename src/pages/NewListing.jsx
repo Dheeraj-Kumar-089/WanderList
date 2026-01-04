@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import API from "../api";
 
 export default function NewListing() {
   const [listing, setListing] = useState({ title: "", description: "", price: "", location: "", country: "" });
@@ -38,7 +38,7 @@ export default function NewListing() {
     });
 
     try {
-      await axios.post("http://localhost:8080/api/listings", formData, {
+      await API.post("/listings", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true
       });

@@ -5,7 +5,7 @@ import { useContext } from "react";
 import {useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; 
 import toast from "react-hot-toast";
-
+import API from "../api";
 
 export default function Login() {
 
@@ -20,7 +20,7 @@ export default function Login() {
 
     const loadingToast = toast.loading("Verifying credentials...");
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", formData,{ withCredentials: true });
+      const res = await API.post("/auth/login", formData,{ withCredentials: true });
       setCurrUser(res.data.user); 
       const redirectUrl = location.state?.from || "/listings";
       

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import API from "../api";
 export default function Signup() {
   const location = useLocation();
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -12,7 +13,7 @@ export default function Signup() {
     e.preventDefault();
     const loadingToast = toast.loading("Adding credentials...");
     try {
-      await axios.post("http://localhost:8080/api/auth/signup", formData);
+      await API.post("/auth/signup", formData);
       const redirectUrl = location.state?.from || "/listings";
       navigate(redirectUrl);
       toast.dismiss(loadingToast);

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
-
+import API from "../api";
 export default function EditListing() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,11 +14,11 @@ export default function EditListing() {
   const [errors, setErrors] = useState({}); 
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/listings/${id}`, { withCredentials: true })
+    API.get(`/listings/${id}`, { withCredentials: true })
       .then(res => {
         const data = res.data;
         if (!currUser) {
-          alert("You must be logged in!");
+          toast.loading("You must be logged in!")
           return navigate("/login");
         }
         if (data.owner && data.owner._id !== currUser._id) {
@@ -70,7 +70,7 @@ export default function EditListing() {
     }
 
     try {
-      await axios.put(`http://localhost:8080/api/listings/${id}`, formData, { 
+      await API.put(`/listings/${id}`, formData, { 
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true 
       });

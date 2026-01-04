@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ListingCard from "../components/ListingCard";
+import API from "../api";
 
 export default function Home() {
   const [listings, setListings] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/listings")
+    API.get("/listings")
       .then(res => setListings(res.data))
       .catch(err => console.error(err));
   }, []);

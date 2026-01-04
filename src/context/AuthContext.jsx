@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import API from "../api";
 
 export const AuthContext = createContext();
 
@@ -10,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 const checkLoggedIn = async () => {
     try {
        
-        const res = await axios.get("http://localhost:8080/api/auth/current_user", { withCredentials: true });
+        const res = await API.get("/auth/current_user", { withCredentials: true });
         setCurrUser(res.data);
     } catch (err) {
         setCurrUser(null);

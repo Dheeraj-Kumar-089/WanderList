@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API from "../api";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("listings");
@@ -12,9 +13,9 @@ export default function AdminDashboard() {
     try {
       
       const [s, l, r] = await Promise.all([
-        axios.get("http://localhost:8080/api/admin/stats", { withCredentials: true }),
-        axios.get("http://localhost:8080/api/admin/pending", { withCredentials: true }),
-        axios.get("http://localhost:8080/api/admin/pending-reviews", { withCredentials: true })
+        API.get("/admin/stats", { withCredentials: true }),
+        API.get("/admin/pending", { withCredentials: true }),
+        API.get("/admin/pending-reviews", { withCredentials: true })
       ]);
       setStats(s.data);
       setData({ listings: l.data, reviews: r.data });
@@ -30,13 +31,13 @@ export default function AdminDashboard() {
   
   const handleAction = async (id, action, isReview = false) => {
     
-    const url = `http://localhost:8080/api/admin/${isReview ? 'reviews/' : ''}${action}/${id}`;
+    const url = `/admin/${isReview ? 'reviews/' : ''}${action}/${id}`;
     
     try {
       if (action === 'approve') {
-        await axios.patch(url, {}, { withCredentials: true }); //
+        await API.patch(url, {}, { withCredentials: true }); //
       } else {
-        await axios.delete(url, { withCredentials: true }); //
+        await API.delete(url, { withCredentials: true }); //
       }
       
       alert(`${isReview ? 'Review' : 'Listing'} ${action}d successfully!`);

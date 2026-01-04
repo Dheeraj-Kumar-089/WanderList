@@ -8,6 +8,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger"; 
 import toast from "react-hot-toast";
+import API from "../api";
 
 gsap.registerPlugin(ScrollTrigger); 
 
@@ -27,7 +28,7 @@ export default function ShowListing() {
 
   const fetchListing = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/listings/${id}`);
+      const res = await API.get(`/listings/${id}`);
       setListing(res.data);
     } catch (err) {
       console.error(err);
@@ -36,7 +37,7 @@ export default function ShowListing() {
 
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/listings/${id}`)
+    API.get(`listings/${id}`)
       .then(res => setListing(res.data))
       .catch(err => console.error(err));
   }, [id]);
@@ -90,7 +91,7 @@ export default function ShowListing() {
     
     if (!window.confirm("Are you sure you want to delete this listing?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/listings/${id}`, {
+      await aAPI.delete(`/listings/${id}`, {
         withCredentials: true
       });
       navigate("/listings");
@@ -104,7 +105,7 @@ export default function ShowListing() {
     const loadingToast = toast.loading("Submitting your review...");
 
     try {
-      const res = await axios.post(`http://localhost:8080/api/listings/${id}/reviews`, { review: reviewForm }, {
+      const res = await API.post(`/listings/${id}/reviews`, { review: reviewForm }, {
         withCredentials: true
       });
 
@@ -125,7 +126,7 @@ export default function ShowListing() {
 
   const handleDeleteReview = async (reviewId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/listings/${id}/reviews/${reviewId}`, {
+      await API.delete(`/listings/${id}/reviews/${reviewId}`, {
         withCredentials: true
       });
       window.location.reload();
