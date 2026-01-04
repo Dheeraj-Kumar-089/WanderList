@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
 
-  baseURL: "https://wanderlist-77wx.onrender.com/api/listings", 
+  baseURL: "https://wanderlist-77wx.onrender.com/api", 
   withCredentials: true, 
 });
 
