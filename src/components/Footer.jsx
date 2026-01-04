@@ -7,7 +7,7 @@ export default function Footer() {
           <i className="fa-brands fa-instagram hover:text-brand cursor-pointer"></i>
           <i className="fa-brands fa-linkedin hover:text-brand cursor-pointer"></i>
         </div>
-        <p className="text-gray-600 text-sm">&copy; Wanderlust Private Limited</p>
+        <p className="text-gray-600 text-sm">&copy; WanderList Private Limited</p>
         <div className="flex justify-center gap-4 text-sm mt-2 underline text-gray-500">
           <a href="#">Privacy</a> <a href="#">Terms</a> <a href="#">Details</a>
         </div>
