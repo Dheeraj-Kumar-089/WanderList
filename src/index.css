@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #fe424d;
+}
+
+@layer base {
+  body { @apply font-sans bg-gray-50 text-neutral-900; }
+}
+
+
+.animate-on-load img {
+  display: block;
+  
+  aspect-ratio: 16 / 9;
+   
+}
+
+
+.animate-on-load {
+  opacity: 0;
+  transform: translateY(30px); 
+  will-change: transform, opacity;
+
+}
+
+
+.review-container {
+  contain: paint;
+  
+  overflow-y: hidden; 
+  overflow-x: hidden; 
+  padding: 20px 0;
+}
+
+.review-card {
+  will-change: transform, opacity;
+}
+
+.gsap-button {
+  isolation: isolate; 
+}
+
+.button__flair {
+  width: 150px;       
+  height: 150px;
+  filter: blur(20px); 
+  mix-blend-mode: soft-light; 
+}
