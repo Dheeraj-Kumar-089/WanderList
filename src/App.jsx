@@ -15,22 +15,6 @@ import { Toaster } from 'react-hot-toast';
 
 export default function App() {
 
-  const [currUser, setCurrUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await API.get("/auth/current_user"); 
-        if (res.data) {
-          setCurrUser(res.data); 
-        }
-      } catch (err) {
-        setCurrUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
-
   const isNotFound = !["/", "/listings", "/signup", "/login"].includes(location.pathname) && 
                      !location.pathname.startsWith("/listings/");
   
