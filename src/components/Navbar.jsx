@@ -57,6 +57,8 @@ export default function Navbar() {
     }
   }, [isMenuOpen]);
 
+
+  
   const handleLogout = async () => {
     try {
       await API.get("/auth/logout", { withCredentials: true });
