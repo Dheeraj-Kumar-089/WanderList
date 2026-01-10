@@ -4,24 +4,46 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import API from "../api";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
+
+
 export default function Signup() {
+
+  const { setCurrUser } = useContext(AuthContext);
+
+
+
   const location = useLocation();
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     const loadingToast = toast.loading("Adding credentials...");
     try {
-      await API.post("/auth/signup", formData);
-      const redirectUrl = location.state?.from || "/listings";
-      navigate(redirectUrl);
-      toast.dismiss(loadingToast);
-      toast.success(`${res.data.user.username}! Added `, { icon: '👋' });
-    } catch (err) {
+      const res = await API.post("/auth/signup", formData);
+      if (res.data.user) {
+        setCurrUser(res.data.user);
+      }
+
       toast.dismiss(loadingToast);
 
-      toast.error(err.response?.data?.error || "Server Error");
+      toast.success(`Welcome ${res.data.user.username}!`, { icon: '👋' });
+
+      // Redirect logic
+      const redirectUrl = location.state?.from || "/listings";
+      navigate(redirectUrl);
+
+    } catch (err) {
+     toast.dismiss(loadingToast);
+      
+      // Backend se aaya error message dikhayein
+      const errorMsg = err.response?.data?.error || "Signup failed. Please try again.";
+      toast.error(errorMsg);
+      console.error("Signup process error:", err);
     }
   };
 
