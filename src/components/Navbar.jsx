@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate ,useLocation} from "react-router-dom";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import gsap from "gsap";
