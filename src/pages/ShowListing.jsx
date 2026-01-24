@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useContext } from "react";
 import "../index.css";
 import { AuthContext } from "../context/AuthContext";
@@ -35,6 +34,50 @@ export default function ShowListing() {
     }
   };
 
+
+  const handleEdit = () => {
+  
+    if (!currUser) {
+      toast.error("You must be logged in to edit!");
+      return;
+    }
+
+    
+    if (!listing.owner || listing.owner._id !== currUser._id) {
+       toast.error("You are not the owner of this. You don't have permission to edit this!", {
+         icon: '🚫',
+         style: {
+           borderRadius: '10px',
+           background: '#333',
+           color: '#fff',
+         },
+       });
+       return; 
+    }
+
+    navigate(`/listings/${id}/edit`);
+  };
+
+
+  const handleDelete = async () => {
+  
+    if (!currUser || (listing.owner._id !== currUser._id)) {
+        toast.error("You are not the owner of this. You don't have permission to delete this!", { icon: '🚫' });
+        return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this listing?")) return;
+    
+    try {
+      await axios.delete(`http://localhost:8080/api/listings/${id}`, {
+        withCredentials: true
+      });
+      toast.success("Listing deleted successfully");
+      navigate("/listings");
+    } catch (err) {
+      toast.error("Error deleting listing");
+    }
+  };
 
   useEffect(() => {
     API.get(`listings/${id}`)
@@ -87,19 +130,6 @@ export default function ShowListing() {
 
 
 
-  const handleDelete = async () => {
-    
-    if (!window.confirm("Are you sure you want to delete this listing?")) return;
-    try {
-      await aAPI.delete(`/listings/${id}`, {
-        withCredentials: true
-      });
-      navigate("/listings");
-    } catch (err) {
-      alert("Error deleting listing");
-    }
-  };
-
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     const loadingToast = toast.loading("Submitting your review...");
@@ -135,8 +165,12 @@ export default function ShowListing() {
     }
   };
 
-  if (!listing) return <div className="text-center py-20 font-bold">Loading...</div>;
-
+  if (!listing) {
+    return(<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading...   &nbsp;
+      
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+    </div>);
+  }
 
 
   return (
@@ -159,10 +193,23 @@ export default function ShowListing() {
         </div>
 
         
-        {currUser && listing.owner && currUser._id === listing.owner._id && (
+        {currUser && (
           <div className="flex gap-4 mt-6">
-            <Link to={`/listings/${id}/edit`} className="bg-gray-900 text-white px-6 flex items-center justify-center text-dec rounded font-bold hover:scale-110 transition delay-150 duration-300 ease-in-out">Edit</Link>
-            <button onClick={handleDelete} className="bg-red-500 text-white px-6 rounded font-bold bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 rounded-base text-sm px-4 py-2.5 text-center leading-5 hover:scale-110 transition delay-150 duration-300 ease-in-out">Delete</button>
+
+            <button 
+                onClick={handleEdit} 
+                className="bg-gray-900 text-white px-6 py-2 flex items-center justify-center rounded font-bold hover:scale-110 transition delay-150 duration-300 ease-in-out cursor-pointer"
+            >
+                Edit
+            </button>
+
+            <button 
+                onClick={handleDelete} 
+                className="bg-red-500 text-white px-6 py-2 rounded font-bold bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:scale-110 transition delay-150 duration-300 ease-in-out cursor-pointer"
+            >
+                Delete
+            </button>
+            
           </div>
         )}
       </div>

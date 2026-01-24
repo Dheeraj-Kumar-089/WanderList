@@ -47,3 +47,7 @@
   filter: blur(20px); 
   mix-blend-mode: soft-light; 
 }
+
+::-webkit-scrollbar {
+  display: none;
+}

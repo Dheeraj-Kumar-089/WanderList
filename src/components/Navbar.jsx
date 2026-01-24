@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import gsap from "gsap";
@@ -11,6 +10,7 @@ import API from "../api";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currUser, setCurrUser } = useContext(AuthContext);
   const navRef = useRef(null);
   const sidebarRef = useRef(null);
@@ -20,7 +20,7 @@ export default function Navbar() {
   useGSAP(() => {
     gsap.to(navRef.current, {
       scrollTrigger: {
-        trigger: "body",
+        trigger: document.body,
         start: "top -10",
         end: "top -100",
         scrub: true,
@@ -100,7 +100,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <span className="text-gray-800 font-medium">Hi, {currUser.username}</span>
+                <span className="text-gray-800 font-large uppercase mr-5">{currUser.username}</span>
                 <button onClick={handleLogout} className="border border-gray-400 px-6 py-3 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer">Logout</button>
               </div>
             )}
@@ -150,7 +150,15 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex flex-col gap-6 sidebar-link">
-              <span className="text-orange-400 font-medium italic text-lg px-3">Hi, {currUser.username}</span>
+              <div>
+              <i className="fa-solid fa-user text-orange-400"></i>
+              <span className="text-orange-400 font-medium text-lg px-3 uppercase"><b>{currUser.username}</b></span>
+              </div>
+              {currUser && currUser.role === "admin" && (
+            <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="bg-green-600/80 hover:bg-green-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95 text-center">
+              Admin Panel
+            </Link>
+          )}
               <button onClick={handleLogout}
                 className="bg-red-600/80 hover:bg-red-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95">
                 Logout

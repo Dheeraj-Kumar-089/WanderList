@@ -9,52 +9,75 @@ export default function EditListing() {
   const navigate = useNavigate();
   const { currUser } = useContext(AuthContext);
 
+  const [originalDescription, setOriginalDescription] = useState("");
+
+
   const [listing, setListing] = useState(null);
   const [newImage, setNewImage] = useState(null);
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
 
   useEffect(() => {
     API.get(`/listings/${id}`, { withCredentials: true })
       .then(res => {
         const data = res.data;
         if (!currUser) {
-          toast.loading("You must be logged in!")
+          toast.error("You must be logged in!");
           return navigate("/login");
         }
         if (data.owner && data.owner._id !== currUser._id) {
-          alert("You are not the owner of this listing!");
+          toast.error("You are not the owner of this listing!");
           return navigate(`/listings/${id}`);
         }
 
-        setListing({ 
-          title: data.title, 
-          description: data.description, 
-          price: data.price, 
-          location: data.location, 
+        setOriginalDescription(data.description);
+
+
+        setListing({
+          title: data.title,
+          description: "",
+          price: data.price,
+          location: data.location,
           country: data.country,
-          originalImageUrl: data.image?.url 
+          originalImageUrl: data.image?.url
         });
       })
       .catch(err => console.log(err));
   }, [id, currUser, navigate]);
 
-  
+
   const validateForm = () => {
     let newErrors = {};
-    if (!listing.title?.trim()) newErrors.title = "Please enter a valid title";
-    if (!listing.description?.trim()) newErrors.description = "Please enter a short description";
-    if (!listing.price) newErrors.price = "Please enter a valid price";
-    if (!listing.country?.trim()) newErrors.country = "Please enter a valid country name";
-    if (!listing.location?.trim()) newErrors.location = "Please enter a valid location";
-    
+    if (!listing.title?.trim()) newErrors.title = "Enter a valid title";
+    if (!listing.description?.trim()) newErrors.description = "Add some short description";
+    if (!listing.price) newErrors.price = "Enter a valid price";
+    if (!listing.country?.trim()) newErrors.country = "Enter a valid country name";
+    if (!listing.location?.trim()) newErrors.location = "Enter a valid location";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+   const getInputClasses = (fieldName) => {
+    const baseClasses = "border p-4 rounded-xl outline-none transition-all duration-300";
+
+    if (errors[fieldName]) {
+      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50`;
+    }
+
+    if (isSubmitted && !errors[fieldName]) {
+      return `${baseClasses} border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.4)] focus:ring-2 focus:ring-green-500 bg-green-50`;
+    }
+
+    return `${baseClasses} focus:ring-2 focus:ring-blue-500 border-gray-300`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
 
+    setIsSubmitted(true);
     if (!validateForm()) return;
     const loadingToast = toast.loading("Updating listing...");
 
@@ -70,128 +93,130 @@ export default function EditListing() {
     }
 
     try {
-      await API.put(`/listings/${id}`, formData, { 
+      await API.put(`/listings/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true 
+        withCredentials: true
       });
 
       toast.dismiss(loadingToast);
-    toast.success("Changes saved! Re-sent for admin review.", {
-      icon: '📝'
-    });
+      toast.success("Changes saved! Re-sent for admin review.", {
+        icon: '📝'
+      });
 
       navigate(`/listings/${id}`);
     } catch (err) {
       toast.dismiss(loadingToast);
-    toast.error("Update failed. Please login to update destination.");
+      toast.error("Update failed. Please login to update destination.");
     }
   };
 
   if (!listing) {
-    return <div className="text-center mt-20 text-2xl font-semibold">Loading...</div>;
+    return(<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading...   &nbsp;
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+    </div>);
   }
 
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white border rounded-xl shadow-md mt-10 mb-10">
       <h2 className="text-3xl font-bold mb-8 text-center">Edit Listing</h2>
-      
+
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
- 
+
         <div className="flex flex-col gap-2">
           <label htmlFor="title" className="font-semibold">Title: </label>
-          <input 
-            type="text" 
-            value={listing.title} 
-            placeholder="Enter Title" 
-            className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.title ? 'border-red-500' : ''}`} 
+          <input
+            type="text"
+            value={listing.title}
+            placeholder="Enter Title"
+            className={getInputClasses("title")}
             onChange={(e) => {
-              setListing({...listing, title: e.target.value});
-              if(errors.title) setErrors({...errors, title: ""});
-            }} 
+              setListing({ ...listing, title: e.target.value });
+              if (errors.title) setErrors({ ...errors, title: "" });
+            }}
           />
           {errors.title && <p className="text-red-500 text-xs italic">{errors.title}</p>}
         </div>
 
-     
+
         <div className="flex flex-col gap-2">
           <label htmlFor="description" className="font-semibold">Description: </label>
-          <textarea 
-            value={listing.description} 
-            placeholder="Enter Description" 
-            className={`border p-4 rounded-xl h-32 focus:ring-2 focus:ring-brand outline-none ${errors.description ? 'border-red-500' : ''}`} 
+          <textarea
+            value={listing.description}
+            placeholder={originalDescription}
+            className={getInputClasses("description")}
             onChange={(e) => {
-              setListing({...listing, description: e.target.value});
-              if(errors.description) setErrors({...errors, description: ""});
+              setListing({ ...listing, description: e.target.value });
+              if (errors.description) setErrors({ ...errors, description: "" });
             }}
           ></textarea>
           {errors.description && <p className="text-red-500 text-xs italic">{errors.description}</p>}
         </div>
-        
-   
+
+
         <div className="flex flex-col gap-2">
-           <label className="text-gray-600 font-semibold text-sm">Upload New Image (Optional)</label>
-           <img 
-             src={listing.originalImageUrl} 
-             alt="Current" 
-             className="w-100 h-50 object-cover rounded-lg mb-2 opacity-70" 
-           />
-           <input 
-             type="file" 
-             className="border p-3 rounded-xl file:bg-gray-100 file:border-0 file:rounded-lg file:px-4 file:py-2" 
-             onChange={(e) => setNewImage(e.target.files[0])} 
-           />
+          <label className="text-gray-600 font-semibold text-sm">Upload New Image (Optional)</label>
+          <img
+            src={listing.originalImageUrl}
+            alt="Current"
+            className="w-100 h-50 object-cover rounded-lg mb-2 opacity-70"
+          />
+          <input
+            type="file"
+            className="border p-3 rounded-xl file:bg-gray-100 file:border-0 file:rounded-lg file:px-4 file:py-2"
+            onChange={(e) => setNewImage(e.target.files[0])}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
+
           <div className="flex flex-col gap-2">
             <label htmlFor="price" className="font-semibold">Price: </label>
-            <input 
-              type="number" 
-              value={listing.price} 
-              placeholder="Enter Price" 
-              className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.price ? 'border-red-500' : ''}`} 
+            <input
+              type="number"
+              value={listing.price}
+              placeholder="Enter Price"
+              className={getInputClasses("price")}
               onChange={(e) => {
-                setListing({...listing, price: e.target.value});
-                if(errors.price) setErrors({...errors, price: ""});
-              }} 
+                setListing({ ...listing, price: e.target.value });
+                if (errors.price) setErrors({ ...errors, price: "" });
+              }}
             />
             {errors.price && <p className="text-red-500 text-xs italic">{errors.price}</p>}
           </div>
 
-         
+
           <div className="flex flex-col gap-2">
             <label htmlFor="country" className="font-semibold">Country: </label>
-            <input 
-              type="text" 
-              value={listing.country} 
-              placeholder="Enter Country" 
-              className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.country ? 'border-red-500' : ''}`} 
+            <input
+              type="text"
+              value={listing.country}
+              placeholder="Enter Country"
+              className={getInputClasses("country")}
               onChange={(e) => {
-                setListing({...listing, country: e.target.value});
-                if(errors.country) setErrors({...errors, country: ""});
-              }} 
+                setListing({ ...listing, country: e.target.value });
+                if (errors.country) setErrors({ ...errors, country: "" });
+              }}
             />
             {errors.country && <p className="text-red-500 text-xs italic">{errors.country}</p>}
           </div>
         </div>
 
-   
+
         <div className="flex flex-col gap-2">
           <label htmlFor="location" className="font-semibold">Location: </label>
-          <input 
-            type="text" 
-            value={listing.location} 
-            placeholder="Enter Location" 
-            className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.location ? 'border-red-500' : ''}`} 
+          <input
+            type="text"
+            value={listing.location}
+            placeholder="Enter Location"
+            className={getInputClasses("location")}
             onChange={(e) => {
-              setListing({...listing, location: e.target.value});
-              if(errors.location) setErrors({...errors, location: ""});
-            }} 
+              setListing({ ...listing, location: e.target.value });
+              if (errors.location) setErrors({ ...errors, location: "" });
+            }}
           />
           {errors.location && <p className="text-red-500 text-xs italic">{errors.location}</p>}
         </div>
-        
+
         <button className="text-white font-bold py-6 transition shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-green-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-gray-900 hover:bg-green-800 px-6 mt-4">
           <span>Update</span>
           <div className="w-0 translate-x-full pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100">
