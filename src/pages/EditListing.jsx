@@ -61,7 +61,7 @@ export default function EditListing() {
   };
 
    const getInputClasses = (fieldName) => {
-    const baseClasses = "border p-4 rounded-xl outline-none transition-all duration-300";
+    const baseClasses = "border p-4 rounded outline-none transition-all duration-300";
 
     if (errors[fieldName]) {
       return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50`;
@@ -117,7 +117,7 @@ export default function EditListing() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-white border rounded-xl shadow-md mt-10 mb-10">
+    <div className="max-w-2xl mx-auto p-8 bg-white border rounded shadow-md mt-10 mb-10">
       <h2 className="text-3xl font-bold mb-8 text-center">Edit Listing</h2>
 
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">

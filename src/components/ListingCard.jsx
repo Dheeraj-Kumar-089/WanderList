@@ -11,71 +11,81 @@ export default function ListingCard({ listing }) {
   const imgRef = useRef(null);
   const wholeCardRef = useRef(null); 
 
+  // Entrance Animation (Jab card screen par aata hai)
   useGSAP(() => {
-    
     gsap.fromTo(imgRef.current, 
       {
-        scale: 0.1,
+        scale: 0.8,
         opacity: 0,
-        rotation: -10,
-        borderRadius: "0px" 
+        rotation: -5,
       },
       {
         scale: 1,
         opacity: 1,
         rotation: 0,
-        borderRadius: "1rem", 
-        duration: 2.0,
-        ease: "elastic.out(1, 0.8)",
+        duration: 1.2, // Thoda fast kiya taaki user ko wait na karna pade
+        ease: "back.out(1.7)", // Bounce effect ke liye
         scrollTrigger: {
           trigger: cardRef.current,
-          start: "top 92%",
+          start: "top 95%",
           toggleActions: "play none none none"
         }
       }
     );
   }, { scope: cardRef });
 
-  
+
   const handleMouseEnter = () => {
+   
     gsap.to(wholeCardRef.current, {
-      scale: 1.1,            
-     
-      boxShadow: "0 20px 25px -5px rgba(208, 0, 0, 0.87), 0 8px 10px -6px rgba(255, 104, 0, 0.8)",
-      y: -5,                 
-      duration: 0.05,
-      ease: "power2.out",
+      scale: 1.1,
+      duration: 0.08,
+      overwrite: "auto"
+    });
+
+   
+    gsap.to(imgRef.current, {
+      scale: 1.15, 
+      duration: 0.8,
+      rotation: 1,
+      ease: "power3.out",
       overwrite: "auto"
     });
   };
+
 
   const handleMouseLeave = () => {
+   
     gsap.to(wholeCardRef.current, {
       scale: 1,
+      y: 0,
+      duration: 0.1,
+      ease: "circ.out",
+      overwrite: "auto"
+    });
+
+  
+    gsap.to(imgRef.current, {
+      scale: 1,
+      duration: 0.8,
       rotation: 0,
-      boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)", 
-      ease: "power2.out",
+      ease: "power3.out",
       overwrite: "auto"
     });
   };
-
   return (
     <div ref={cardRef}>
       <Link 
         to={`/listings/${listing._id}`} 
-        className="group block mb-6 outline-none"
+        className="group block mb-6 mt-6 outline-none"
         onMouseEnter={handleMouseEnter} 
         onMouseLeave={handleMouseLeave}
       >
-
         <div 
           ref={wholeCardRef} 
-          className="flex flex-col bg-gray-200 rounded-2xl transition-all p-2"
-          style={{ boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)" }}
+          className="flex flex-col bg-white rounded-2xl transition-all border border-gray-100"
         >
-          
-        
-          <div className="w-full relative overflow-hidden rounded-xl h-80 bg-gray-100">
+          <div className="w-full relative overflow-hidden rounded-xl rounded-b-none h-80 bg-gray-100">
             <img
               ref={imgRef}
               src={listing.image?.url || "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"} 
@@ -85,18 +95,16 @@ export default function ListingCard({ listing }) {
             />
           </div>
 
-        
           <div className="mt-3 px-2 pb-2">
             <div className="text-gray-900 text-lg truncate font-bold">
               {listing.title}
             </div>
             <div className="text-gray-600 text-sm mt-1">
-              <span className="font-semibold text-black">
+              <span className="font-semibold text-rose-600">
                 ₹{listing.price?.toLocaleString("en-IN")}
-              </span> 
+              </span>
             </div>
           </div>
-          
         </div>
       </Link>
     </div>

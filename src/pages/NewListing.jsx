@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import API from "../api";
@@ -9,25 +8,44 @@ export default function NewListing() {
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({}); 
   const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validateForm = () => {
     let newErrors = {};
-    if (!listing.title.trim()) newErrors.title = "Please enter a valid title";
-    if (!listing.description.trim()) newErrors.description = "Please enter a short description";
-    if (!image) newErrors.image = "Please upload an image";
-    if (!listing.price) newErrors.price = "Please enter a valid price";
-    if (!listing.country.trim()) newErrors.country = "Please enter a valid country name";
-    if (!listing.location.trim()) newErrors.location = "Please enter a valid location";
+    if (!listing.title.trim()) newErrors.title = "Enter a valid title";
+    if (!listing.description.trim()) newErrors.description = "Enter a short description";
+    if (!image) newErrors.image = "Upload an image";
+    if (!listing.price) newErrors.price = "Enter a valid price";
+    if (!listing.country.trim()) newErrors.country = "Enter a valid country name";
+    if (!listing.location.trim()) newErrors.location = "Enter a valid location";
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; 
   };
 
+
+  const getInputClasses = (fieldName) => {
+    const baseClasses = "border p-4 rounded outline-none transition-all duration-300 w-full";
+
+    if (errors[fieldName]) {
+      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50`;
+    }
+
+    if (isSubmitted && !errors[fieldName]) {
+      return `${baseClasses} border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.4)] focus:ring-2 focus:ring-green-500 bg-green-50`;
+    }
+
+    return `${baseClasses} focus:ring-2 focus:ring-blue-500 border-gray-300`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    
+
+    setIsSubmitted(true);
+
+
     if (!validateForm()) return;
+
 
     const loadingToast = toast.loading("Uploading your destination...");
 
@@ -45,7 +63,7 @@ export default function NewListing() {
       toast.dismiss(loadingToast);
   
     toast.success("Submitted! It will be live after admin approval.", {
-      duration: 6000,
+      duration: 4000,
       icon: '⏳'
     });
 
@@ -57,7 +75,7 @@ export default function NewListing() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-white border rounded-xl shadow-md my-10">
+    <div className="max-w-2xl mx-auto p-8 bg-white border rounded shadow-md my-10">
       <h2 className="text-3xl font-bold mb-8 text-center">Add New Destination</h2>
       
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
@@ -66,7 +84,7 @@ export default function NewListing() {
           <label htmlFor="title" className="font-semibold">Title:</label>
           <input 
             type="text" 
-            className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.title ? 'border-red-500' : ''}`} 
+            className={getInputClasses("title")}
             placeholder="Enter title"
             onChange={(e) => {
                 setListing({ ...listing, title: e.target.value });
@@ -80,7 +98,7 @@ export default function NewListing() {
         <div className="flex flex-col gap-2">
           <label htmlFor="description" className="font-semibold">Description:</label>
           <textarea 
-            className={`border p-4 rounded-xl h-32 focus:ring-2 focus:ring-brand outline-none ${errors.description ? 'border-red-500' : ''}`} 
+            className={getInputClasses("description")}
             placeholder="Description"
             onChange={(e) => {
                 setListing({ ...listing, description: e.target.value });
@@ -95,7 +113,7 @@ export default function NewListing() {
           <label htmlFor="image" className="font-semibold">Upload Image:</label>
           <input 
             type="file" 
-            className={`border p-3 rounded-xl file:bg-gray-100 file:border-0 file:rounded-lg file:px-4 file:py-2 ${errors.image ? 'border-red-500' : ''}`} 
+            className={getInputClasses("image")}
             onChange={(e) => {
                 setImage(e.target.files[0]);
                 if(errors.image) setErrors({...errors, image: ""});
@@ -110,7 +128,7 @@ export default function NewListing() {
             <label htmlFor="price" className="font-semibold">Price:</label>
             <input
               type="number"
-              className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.price ? 'border-red-500' : ''}`}
+              className={getInputClasses("price")}
               placeholder="Enter price"
               onChange={(e) => {
                 setListing({ ...listing, price: e.target.value });
@@ -124,7 +142,7 @@ export default function NewListing() {
             <label htmlFor="country" className="font-semibold">Country:</label>
             <input
               type="text"
-              className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.country ? 'border-red-500' : ''}`}
+              className={getInputClasses("country")}
               placeholder="Enter country"
               onChange={(e) => {
                 setListing({ ...listing, country: e.target.value });
@@ -140,7 +158,7 @@ export default function NewListing() {
           <label htmlFor="location" className="font-semibold">Location:</label>
           <input 
             type="text" 
-            className={`border p-4 rounded-xl focus:ring-2 focus:ring-brand outline-none ${errors.location ? 'border-red-500' : ''}`} 
+            className={getInputClasses("location")}
             placeholder="Enter location"
             onChange={(e) => {
                 setListing({ ...listing, location: e.target.value });
@@ -151,7 +169,7 @@ export default function NewListing() {
         </div>
 
        
-        <button className="text-white font-bold py-6 transition shadow-lg shadow-gray-500 hover:scale-105 hover:shadow-green-200 group relative inline-flex h-12 items-center text-sm justify-center overflow-hidden rounded-xl bg-gray-900 hover:bg-green-800 px-6 mt-4">
+        <button className="text-white font-bold py-6 transition shadow-lg shadow-gray-500 hover:scale-105 hover:shadow-green-200 group relative inline-flex h-12 items-center text-sm justify-center overflow-hidden roundedl bg-gray-900 hover:bg-green-800 px-6 mt-4">
           <span>Add Destination</span>
           <div className="w-0 translate-x-full pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>

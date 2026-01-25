@@ -76,10 +76,13 @@ export default function Navbar() {
 
       <nav ref={navRef} className="fixed top-0 w-full z-50 bg-white/10 backdrop-blur-sm py-3 h-20 transition-all duration-300 border-b-1 border-gray-300">
         <div className="container mx-auto px-4 flex items-center justify-between h-full">
-          <Link to="/" className="text-brand text-3xl hover:scale-110 transition-all">
-            <i className="fa-regular fa-compass"></i>
+        
+          <Link to="/" className="flex flex-row items-center justify-center gap-1 text-xl hover:scale-110 transition-all">
+          <div className="text-brand text-3xl hover:scale-110 transition-all">
+            <i className="fa-regular fa-compass"></i
+            ></div>
+          Explore
           </Link>
-
           
           <div className="hidden md:flex gap-6 font-semibold text-sm items-center">
             {currUser && currUser.role === "admin" && (
@@ -87,21 +90,22 @@ export default function Navbar() {
               Admin Panel
             </Link>
           )}
-            <Link to="/listings/new" className="text-gray-800 border transition-all duration-300 hover:translate-x-2 p-3 rounded-full hover:border hover:rounded-3xl hover:bg-orange-600 hover:text-white hover:shadow-black">Add New Destination</Link>
+            <Link to="/listings/new" className="text-gray-800 border transition-all duration-300 hover:translate-x-2 p-3 rounded-full hover:border hover:rounded-3xl hover:bg-[#17ADFE] hover:shadow-black">Add New Destination</Link>
             {!currUser ? (
               <div className="flex gap-4">
                 <Link to="/signup" state={{ from: location.pathname }}
 
-                  className="text-white font-bold py-6 transition rounded-full shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-blue-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-blue-600 hover:bg-blue-700 px-6"><span>Signup</span><div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></Link>
+                  className="text-white font-bold py-6 transition rounded-full shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-blue-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-[#4D4DFD] hover:bg-[#4D4DFD] px-6"><span>Signup</span><div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></Link>
                 <Link to="/login"
                   state={{ from: location.pathname }}
-                  className=" text-white font-bold py-6 transition rounded-full shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-blue-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-blue-600 hover:bg-blue-700 px-6 "><span>Login</span><div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></Link>
+                  className=" text-white font-bold py-6 transition rounded-full shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-blue-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-[#4D4DFD] hover:bg-[#4D4DFD] px-6 "><span>Login</span><div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></Link>
 
               </div>
             ) : (
-              <div className="flex items-center gap-4">
-                <span className="text-gray-800 font-large uppercase mr-5">{currUser.username}</span>
+              <div className="flex items-center">
                 <button onClick={handleLogout} className="border border-gray-400 px-6 py-3 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer">Logout</button>
+                <i className="fa-solid fa-user ml-6 mr-2"></i>
+                <span className="text-gray-800 font-large uppercase mr-5">{currUser.username}</span>
               </div>
             )}
           </div>

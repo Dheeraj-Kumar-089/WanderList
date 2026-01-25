@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import API from "../api";
 
 export const AuthContext = createContext();
@@ -39,7 +39,7 @@ const checkLoggedIn = async () => {
         }
     };
 
-    
+
     return (
         <AuthContext.Provider value={{ currUser, setCurrUser: updateUser, loading }}>
             {children}
