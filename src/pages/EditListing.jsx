@@ -41,6 +41,7 @@ export default function EditListing() {
           price: data.price,
           location: data.location,
           country: data.country,
+          state: data.state || "",
           originalImageUrl: data.image?.url
         });
       })
@@ -55,11 +56,21 @@ export default function EditListing() {
     if (!listing.price) newErrors.price = "Enter a valid price";
     if (!listing.country?.trim()) newErrors.country = "Enter a valid country name";
     if (!listing.location?.trim()) newErrors.location = "Enter a valid location";
+    if (!listing.state?.trim()) newErrors.state = "Select a state";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+    const indianStates = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+    "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+    "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+    "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+    "Uttarakhand", "West Bengal", "Delhi", "Jammu and Kashmir", "Ladakh", "Puducherry", "Chandigarh", "Andaman and Nicobar Islands", "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep"
+  ].sort();
+
+  
    const getInputClasses = (fieldName) => {
     const baseClasses = "border p-4 rounded outline-none transition-all duration-300";
 
@@ -90,6 +101,9 @@ export default function EditListing() {
 
     if (newImage) {
       formData.append("listing[image]", newImage);
+    }
+    if (listing.state) {
+      formData.append("listing[state]", listing.state);
     }
 
     try {
@@ -215,6 +229,24 @@ export default function EditListing() {
             }}
           />
           {errors.location && <p className="text-red-500 text-xs italic">{errors.location}</p>}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="state" className="font-semibold">State (India): </label>
+          <select
+            value={listing.state || ""}
+            className={getInputClasses("state") + " bg-white"}
+            onChange={(e) => {
+              setListing({ ...listing, state: e.target.value });
+              if (errors.state) setErrors({ ...errors, state: "" });
+            }}
+          >
+            <option value="">Select a State</option>
+            {indianStates.map(st => (
+              <option key={st} value={st}>{st}</option>
+            ))}
+          </select>
+          {errors.state && <p className="text-red-500 text-xs italic">{errors.state}</p>}
         </div>
 
         <button className="text-white font-bold py-6 transition shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-green-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-gray-900 hover:bg-green-800 px-6 mt-4">

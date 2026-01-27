@@ -8,10 +8,10 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
+
   const fetchData = async () => {
     try {
-      
+
       const [s, l, r] = await Promise.all([
         API.get("/admin/stats", { withCredentials: true }),
         API.get("/admin/pending", { withCredentials: true }),
@@ -19,44 +19,67 @@ export default function AdminDashboard() {
       ]);
       setStats(s.data);
       setData({ listings: l.data, reviews: r.data });
-    } catch (err) { 
+    } catch (err) {
       console.error("Fetch Error:", err.response?.data || err.message);
-    } finally { 
-      setLoading(false); 
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => { fetchData(); }, []);
 
-  
+
   const handleAction = async (id, action, isReview = false) => {
-    
+
     const url = `/admin/${isReview ? 'reviews/' : ''}${action}/${id}`;
-    
+
     try {
       if (action === 'approve') {
         await API.patch(url, {}, { withCredentials: true }); //
       } else {
         await API.delete(url, { withCredentials: true }); //
       }
-      
+
       alert(`${isReview ? 'Review' : 'Listing'} ${action}d successfully!`);
-      fetchData(); 
-    } catch (err) { 
+      fetchData();
+    } catch (err) {
       console.error("Action Error:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Action failed. Check console for details.");
     }
   };
 
-  if (loading) return <div className="p-20 text-center font-bold text-2xl">Loading Admin Panel...</div>;
+  const handleApproveAll = async () => {
+    if (!window.confirm("Approve ALL pending listings?")) return;
+    try {
+      await API.patch("/admin/approve-all", {}, { withCredentials: true });
+      alert("All listings approved!");
+      fetchData();
+    } catch (err) {
+      alert("Error approving all");
+    }
+  };
 
+  if (loading) {
+    return (<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading Admin Panel...   &nbsp;
+
+      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+    </div>);
+  }
   return (
     <div className="max-w-6xl mx-auto p-6 mt-20">
       <div className="flex justify-between items-center mb-10">
         <h1 className="text-4xl font-black text-gray-900">Admin Control</h1>
-        <button onClick={fetchData} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-           <i className="fa-solid fa-rotate-right"></i>
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={handleApproveAll}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 shadow-md transition-transform active:scale-95"
+          >
+            Approve All Listings
+          </button>
+          <button onClick={fetchData} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 w-10 h-10 flex items-center justify-center">
+            <i className="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
@@ -74,23 +97,23 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-   
+
       <div className="flex bg-gray-100 p-1 rounded-2xl w-fit mb-8">
-        <button 
-          onClick={() => setActiveTab("listings")} 
+        <button
+          onClick={() => setActiveTab("listings")}
           className={`px-8 py-3 rounded-xl font-bold transition-all ${activeTab === 'listings' ? 'bg-white text-black shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
         >
           Listings ({data.listings.length})
         </button>
-        <button 
-          onClick={() => setActiveTab("reviews")} 
+        <button
+          onClick={() => setActiveTab("reviews")}
           className={`px-8 py-3 rounded-xl font-bold transition-all ${activeTab === 'reviews' ? 'bg-white text-black shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
         >
           Reviews ({data.reviews.length})
         </button>
       </div>
 
-    
+
       <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-2xl">
         <table className="w-full text-left">
           <thead className="bg-gray-50/50 border-b border-gray-100">
@@ -114,14 +137,14 @@ export default function AdminDashboard() {
                   </td>
                   <td className="p-6">
                     <div className="flex justify-center gap-3">
-                      <button 
-                        onClick={() => handleAction(item._id, 'approve', activeTab === 'reviews')} 
+                      <button
+                        onClick={() => handleAction(item._id, 'approve', activeTab === 'reviews')}
                         className="bg-green-600 text-white px-6 py-2.5 rounded-xl text-xs font-black hover:bg-green-700 transition-transform active:scale-95"
                       >
                         APPROVE
                       </button>
-                      <button 
-                        onClick={() => handleAction(item._id, 'reject', activeTab === 'reviews')} 
+                      <button
+                        onClick={() => handleAction(item._id, 'reject', activeTab === 'reviews')}
                         className="bg-red-50 text-red-600 px-6 py-2.5 rounded-xl text-xs font-black hover:bg-red-100 transition-transform active:scale-95"
                       >
                         REJECT

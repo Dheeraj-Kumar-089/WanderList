@@ -1,6 +1,9 @@
-import { useRef } from "react";
+import { useRef, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import toast from "react-hot-toast";
+import API from "../api";
+import { AuthContext } from "../context/AuthContext";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -9,98 +12,124 @@ gsap.registerPlugin(ScrollTrigger);
 export default function ListingCard({ listing }) {
   const cardRef = useRef(null);
   const imgRef = useRef(null);
-  const wholeCardRef = useRef(null); 
+  const wholeCardRef = useRef(null);
 
-  // Entrance Animation (Jab card screen par aata hai)
-  useGSAP(() => {
-    gsap.fromTo(imgRef.current, 
-      {
-        scale: 0.8,
-        opacity: 0,
-        rotation: -5,
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        rotation: 0,
-        duration: 1.2, // Thoda fast kiya taaki user ko wait na karna pade
-        ease: "back.out(1.7)", // Bounce effect ke liye
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: "top 95%",
-          toggleActions: "play none none none"
-        }
-      }
-    );
-  }, { scope: cardRef });
+
+  const { currUser } = useContext(AuthContext);
+  const [likeCount, setLikeCount] = useState(listing.likes || 0);
+  const [isLiked, setIsLiked] = useState(listing.likedBy?.includes(currUser?._id) || false);
 
 
   const handleMouseEnter = () => {
-   
+
     gsap.to(wholeCardRef.current, {
-      scale: 1.1,
-      duration: 0.08,
+      scale: 1.08,
+      duration: 0.8,
+      ease: "power4.out",
       overwrite: "auto"
     });
 
-   
+
     gsap.to(imgRef.current, {
-      scale: 1.15, 
-      duration: 0.8,
-      rotation: 1,
-      ease: "power3.out",
+      scale: 1.15,
+      duration: 0.01,
+      ease: "power4.out",
       overwrite: "auto"
     });
   };
 
 
   const handleMouseLeave = () => {
-   
+
     gsap.to(wholeCardRef.current, {
       scale: 1,
-      y: 0,
-      duration: 0.1,
-      ease: "circ.out",
+      duration: 0.8,
+      ease: "power4.out",
       overwrite: "auto"
     });
 
-  
+
     gsap.to(imgRef.current, {
       scale: 1,
-      duration: 0.8,
+      duration: 0.01,
       rotation: 0,
-      ease: "power3.out",
+      ease: "power4.out",
       overwrite: "auto"
     });
   };
   return (
-    <div ref={cardRef}>
-      <Link 
-        to={`/listings/${listing._id}`} 
-        className="group block mb-6 mt-6 outline-none"
-        onMouseEnter={handleMouseEnter} 
+    <div ref={cardRef} className="relative group cursor-pointer">
+      <div className="absolute top-3 right-3 z-10 flex flex-col items-center">
+        <button
+          onClick={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!currUser) {
+              return toast.error("Please login to like listings!");
+            }
+
+            const newLikedState = !isLiked;
+            setIsLiked(newLikedState);
+            setLikeCount(prev => newLikedState ? prev + 1 : prev - 1);
+
+            try {
+              const res = await API.post(`/listings/${listing._id}/like`);
+              setLikeCount(res.data.likes);
+              setIsLiked(res.data.isLiked);
+            } catch (err) {
+              console.error("Failed to like", err);
+
+              setIsLiked(!newLikedState);
+              setLikeCount(prev => !newLikedState ? prev + 1 : prev - 1);
+              toast.error(`Failed: ${err.response?.data?.error || err.message}`);
+            }
+          }}
+          className="bg-white/60 p-2 rounded-full backdrop-blur-sm hover:scale-110 transition-transform active:scale-95 hover:bg-white"
+        >
+          <i className={`fa-heart text-xl ${isLiked ? "fa-solid text-rose-500" : "fa-regular text-gray-800/70"}`}></i>
+        </button>
+
+        {likeCount > 0 && <span className="text-[8px] font-bold text-white bg-black/40 px-1.5 py-0.5 rounded-full mt-1 backdrop-blur-sm">{likeCount}</span>}
+      </div>
+
+      <Link
+        to={`/listings/${listing._id}`}
+        className="block mb-6 outline-none"
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div 
-          ref={wholeCardRef} 
-          className="flex flex-col bg-white rounded-2xl transition-all border border-gray-100"
+        <div
+          ref={wholeCardRef}
+          className="flex flex-col gap-2 bg-transparent"
         >
-          <div className="w-full relative overflow-hidden rounded-xl rounded-b-none h-80 bg-gray-100">
+
+          <div className="w-full relative overflow-hidden rounded-xl aspect-[20/19] bg-gray-200">
             <img
               ref={imgRef}
-              src={listing.image?.url || "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60"} 
-              className="h-full w-full object-cover" 
+              src={listing.images && listing.images.length > 0 ? listing.images[0].url : (listing.image?.url || "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60")}
+              className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
               loading="lazy"
-              alt={listing.title} 
+              alt={listing.title}
             />
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded shadow-sm text-xs font-bold text-gray-800">
+              {listing.categories?.[0] ? listing.categories[0].replace("-", " ") : "Guest Favorite"}
+            </div>
           </div>
 
-          <div className="mt-3 px-2 pb-2">
-            <div className="text-gray-900 text-lg truncate font-bold">
-              {listing.title}
+
+          <div className="mt-1">
+            <div className="flex justify-between items-start">
+              <h3 className="font-bold text-gray-900 group-hover:text-rose-500 transition-colors truncate pr-2 font-heading text-lg">
+                {listing.title}
+              </h3>
+              <div className="flex items-center gap-1">
+                <i className="fa-solid fa-star text-[10px] text-black"></i>
+                <span className="text-sm text-black">{listing.rating || "4.87"}</span>
+              </div>
             </div>
-            <div className="text-gray-600 text-sm mt-1">
-              <span className="font-semibold text-rose-600">
+            <p className="text-gray-500 text-[14px] truncate">{listing.location}</p>
+            <div className="flex items-baseline mt-1 gap-1">
+              <span className="font-semibold text-gray-900 text-[15px]">
                 ₹{listing.price?.toLocaleString("en-IN")}
               </span>
             </div>

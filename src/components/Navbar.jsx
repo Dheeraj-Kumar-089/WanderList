@@ -1,4 +1,4 @@
-import { Link, useNavigate ,useLocation} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import gsap from "gsap";
@@ -15,8 +15,17 @@ export default function Navbar() {
   const navRef = useRef(null);
   const sidebarRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+
+      navigate(`/?state=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(""); 
+    }
+  };
+
+
   useGSAP(() => {
     gsap.to(navRef.current, {
       scrollTrigger: {
@@ -32,23 +41,23 @@ export default function Navbar() {
     });
   }, { scope: navRef });
 
-  
+
   useGSAP(() => {
     if (isMenuOpen) {
-     
+
       gsap.to(sidebarRef.current, {
         x: 0,
         duration: 0.6,
         ease: "expo.out",
       });
 
-      
+
       gsap.fromTo(".sidebar-link",
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.7)", delay: 0.2 }
       );
     } else {
-     
+
       gsap.to(sidebarRef.current, {
         x: "100%",
         duration: 0.5,
@@ -58,12 +67,15 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
 
-  
+
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
   const handleLogout = async () => {
     try {
       await API.get("/auth/logout", { withCredentials: true });
       setCurrUser(null);
       setIsMenuOpen(false);
+      setIsUserDropdownOpen(false);
       toast.success("Logged out. See you soon!", { icon: '🚶' });
       navigate("/");
     } catch (e) {
@@ -74,60 +86,129 @@ export default function Navbar() {
   return (
     <>
 
-      <nav ref={navRef} className="fixed top-0 w-full z-50 bg-white/10 backdrop-blur-sm py-3 h-20 transition-all duration-300 border-b-1 border-gray-300">
-        <div className="container mx-auto px-4 flex items-center justify-between h-full">
-        
-          <Link to="/" className="flex flex-row items-center justify-center gap-1 text-xl hover:scale-110 transition-all">
-          <div className="text-brand text-3xl hover:scale-110 transition-all">
-            <i className="fa-regular fa-compass"></i
-            ></div>
-          Explore
+      <nav ref={navRef} className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md py-3 h-20 transition-all duration-300 border-b border-gray-200/50 shadow-sm">
+        <div className="container mx-auto px-6 flex items-center justify-between h-full">
+
+          <Link to="/" className="flex flex-row items-center justify-center gap-2 group">
+            <div className="text-rose-500 text-3xl transition-transform duration-300 group-hover:rotate-[360deg] group-hover:scale-110">
+              <i className="fa-regular fa-compass"></i>
+            </div>
+            <span className="hidden lg:block text-rose-500 font-extrabold text-2xl tracking-tight font-heading">WanderList</span>
           </Link>
-          
-          <div className="hidden md:flex gap-6 font-semibold text-sm items-center">
-            {currUser && currUser.role === "admin" && (
-            <Link to="/admin" className="text-sm font-bold text-brand hover:underline">
-              Admin Panel
+
+         
+          <div className="hidden md:flex items-center bg-white border border-gray-200 rounded-full py-2.5 px-4 shadow-sm hover:shadow-md transition-shadow duration-300 gap-3 w-[360px] focus-within:ring-2 focus-within:ring-rose-100 focus-within:border-rose-300">
+            <input
+              type="text"
+              placeholder="Search destinations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="flex-1 bg-transparent outline-none text-sm font-medium text-gray-700 placeholder-gray-400"
+            />
+            <div
+              onClick={handleSearch}
+              className="bg-rose-500 p-3 flex justify-center items-center rounded-full text-white cursor-pointer hover:bg-rose-600 active:scale-95 transition-all duration-200 shadow-rose-200/50 shadow-lg"
+            >
+              <i className="fa-solid fa-magnifying-glass text-xs"></i>
+            </div>
+          </div>
+
+          <div className="hidden md:flex gap-4 font-semibold text-sm items-center">
+            <Link to="/listings/new" className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-full hover:bg-gray-100 transition-all duration-200">
+              Switch to hosting
             </Link>
-          )}
-            <Link to="/listings/new" className="text-gray-800 border transition-all duration-300 hover:translate-x-2 p-3 rounded-full hover:border hover:rounded-3xl hover:bg-[#17ADFE] hover:shadow-black">Add New Destination</Link>
+
             {!currUser ? (
-              <div className="flex gap-4">
+              <>
+                <Link to="/login" state={{ from: location.pathname }} className="group text-gray-700 hover:text-gray-900 font-medium px-4 py-2 transition text-sm flex items-center gap-1">
+                  <span>Log in</span>
+                  <div className="w-0 translate-x-full opacity-0 transition-all duration-200 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 overflow-hidden">
+                    <i className="fa-solid fa-arrow-right-long text-xs"></i>
+                  </div>
+                </Link>
                 <Link to="/signup" state={{ from: location.pathname }}
-
-                  className="text-white font-bold py-6 transition rounded-full shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-blue-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-[#4D4DFD] hover:bg-[#4D4DFD] px-6"><span>Signup</span><div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></Link>
-                <Link to="/login"
-                  state={{ from: location.pathname }}
-                  className=" text-white font-bold py-6 transition rounded-full shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-blue-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-[#4D4DFD] hover:bg-[#4D4DFD] px-6 "><span>Login</span><div class="w-0 translate-x-[100%] pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-1 group-hover:opacity-100"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></Link>
-
-              </div>
+                  className="group bg-gray-900 text-white font-semibold py-2 px-5 rounded-full hover:bg-black hover:scale-105 active:scale-95 transition-all shadow-lg shadow-gray-200 flex items-center gap-2">
+                  <span>Sign up</span>
+                  <div className="w-0 translate-x-full opacity-0 transition-all duration-200 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 overflow-hidden">
+                    <i className="fa-solid fa-arrow-right text-xs"></i>
+                  </div>
+                </Link>
+              </>
             ) : (
-              <div className="flex items-center">
-                <button onClick={handleLogout} className="border border-gray-400 px-6 py-3 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer">Logout</button>
-                <i className="fa-solid fa-user ml-6 mr-2"></i>
-                <span className="text-gray-800 font-large uppercase mr-5">{currUser.username}</span>
+              <div className="flex items-center gap-4">
+                {currUser.role === "admin" && (
+                  <Link to="/admin" className="text-xs font-bold bg-rose-100 text-rose-600 px-3 py-1 rounded-full uppercase tracking-wider hover:bg-rose-200 transition">
+                    Admin
+                  </Link>
+                )}
+
+                
+                <div className="relative">
+                  <div
+                    className="flex items-center gap-3 border border-gray-200 pl-2 pr-4 py-1.5 rounded-full hover:shadow-md transition cursor-pointer bg-white"
+                    onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                    title="User Menu"
+                  >
+                    <div className="bg-gray-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">
+                      {currUser.username.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-gray-700 font-medium">{currUser.username}</span>
+                  </div>
+
+     
+                  {isUserDropdownOpen && (
+                    <>
+                      
+                      <div className="fixed inset-0 z-[55] cursor-default" onClick={() => setIsUserDropdownOpen(false)}></div>
+
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
+                        
+                        <div className="px-4 py-4 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
+                          <div className="bg-gray-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+                            {currUser.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold text-gray-800 text-sm">{currUser.username}</span>
+                            <span className="text-xs text-gray-500">Member</span>
+                          </div>
+                        </div>
+
+                       
+                        <button
+                          onClick={() => { handleLogout(); }}
+                          className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-rose-50 transition-colors flex items-center gap-2 font-medium"
+                        >
+                          <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                          Log out
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+
               </div>
             )}
           </div>
 
-         
-          <button onClick={() => setIsMenuOpen(true)} className="md:hidden text-2xl text-gray-800 p-2 hover:bg-white/20 rounded-lg transition-all">
+
+          <button onClick={() => setIsMenuOpen(true)} className="md:hidden text-2xl text-gray-700 p-2 hover:bg-gray-100 rounded-full transition-all">
             <i className="fa-solid fa-bars"></i>
           </button>
         </div>
-      </nav>
+      </nav >
 
-      
+
       <div
         ref={sidebarRef}
         className="fixed top-0 rounded-l-xl right-0 h-full w-[300px] bg-gray-900/50 backdrop-blur-2xl z-[100] translate-x-full md:hidden flex flex-col p-8 border-l border-white/10 shadow-[-20px_0_30px_rgba(0,0,0,0.3)]"
       >
-      
+
         <button onClick={() => setIsMenuOpen(false)} className="self-end text-3xl text-white/70 hover:text-orange-500 mb-10 transition-colors">
           <i className="fa-solid fa-xmark"></i>
         </button>
 
-        
+
         <div className="flex flex-col gap-4">
           <Link to="/" onClick={() => setIsMenuOpen(false)}
             className="sidebar-link text-white text-xl font-bold p-3 hover:bg-white/10 hover:translate-x-5 transition-all duration-300 rounded hover:border hover:text-white hover:shadow-black">
@@ -155,14 +236,14 @@ export default function Navbar() {
           ) : (
             <div className="flex flex-col gap-6 sidebar-link">
               <div>
-              <i className="fa-solid fa-user text-orange-400"></i>
-              <span className="text-orange-400 font-medium text-lg px-3 uppercase"><b>{currUser.username}</b></span>
+                <i className="fa-solid fa-user text-orange-400"></i>
+                <span className="text-orange-400 font-medium text-lg px-3 uppercase"><b>{currUser.username}</b></span>
               </div>
               {currUser && currUser.role === "admin" && (
-            <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="bg-green-600/80 hover:bg-green-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95 text-center">
-              Admin Panel
-            </Link>
-          )}
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="bg-green-600/80 hover:bg-green-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95 text-center">
+                  Admin Panel
+                </Link>
+              )}
               <button onClick={handleLogout}
                 className="bg-red-600/80 hover:bg-red-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95">
                 Logout
@@ -172,10 +253,12 @@ export default function Navbar() {
         </div>
       </div>
 
-    
-      {isMenuOpen && (
-        <div onClick={() => setIsMenuOpen(false)} className="fixed inset-0 bg-black/40 z-[90] backdrop-blur-sm md:hidden"></div>
-      )}
+
+      {
+        isMenuOpen && (
+          <div onClick={() => setIsMenuOpen(false)} className="fixed inset-0 bg-black/40 z-[90] backdrop-blur-sm md:hidden"></div>
+        )
+      }
     </>
   );
 }
