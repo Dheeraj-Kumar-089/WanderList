@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
-import {User,Mail,Lock} from "lucide-react";
+import {User,Mail,Lock,Eye,EyeOff} from "lucide-react";
 
 
 export default function Signup() {
@@ -15,6 +15,7 @@ export default function Signup() {
 
 const [errors, setErrors] = useState({});
 const [isSubmitted, setIsSubmitted] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
 
   const location = useLocation();
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -111,13 +112,20 @@ const [isSubmitted, setIsSubmitted] = useState(false);
         </div>
         <div className="relative group">
         <Lock className={`absolute left-0 top-3 transition-colors duration-300 ${errors.password ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
-        <input type="password"
+        <input type={showPassword?"text":"password"}
         placeholder="Enter your Password" 
-        id="password" className={getInputClasses("password")} onChange={(e) => {
+        id="password" className={`${getInputClasses("password")} pr-10`} onChange={(e) => {
           setFormData({ ...formData, password: e.target.value });
           if (errors.password) setErrors({ ...errors, password: "" });
         }}
         />
+        <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-0 top-3 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
         {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
 
         </div>

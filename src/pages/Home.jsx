@@ -95,7 +95,7 @@ export default function Home() {
     if (listings.length > 0) {
       const items = gsap.utils.toArray(".listing-card-item");
 
-      // Set initial state ONLY for items that haven't been animated yet
+      
       items.forEach((item) => {
         const id = item.dataset.id;
         if (id && !animatedIds.current.has(id)) {
@@ -107,11 +107,11 @@ export default function Home() {
         start: "top 90%",
         interval: 0.15,
         onEnter: (batch) => {
-          // Filter out items that are already animated to prevent delay
+          
           const toAnimate = batch.filter(el => !animatedIds.current.has(el.dataset.id));
 
           if (toAnimate.length > 0) {
-            // Mark them as animating immediately
+           
             toAnimate.forEach(el => animatedIds.current.add(el.dataset.id));
 
             gsap.to(toAnimate, {
@@ -126,9 +126,9 @@ export default function Home() {
           }
         },
         onLeaveBack: (batch) => {
-          // Reset when scrolling back up
+         
           gsap.set(batch, { opacity: 0, y: 50, scale: 0.95, overwrite: true });
-          // Remove from set so they can re-animate
+        
           batch.forEach(el => animatedIds.current.delete(el.dataset.id));
         }
       });

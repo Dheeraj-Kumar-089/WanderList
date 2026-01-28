@@ -57,6 +57,22 @@ export default function ListingCard({ listing }) {
       overwrite: "auto"
     });
   };
+  const getOptimizedUrl = (url) => {
+    if (!url) return "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=60";
+
+    
+    if (url.includes("images.unsplash.com")) {
+      return `${url}&w=300&auto=format,compress`;
+    }
+
+ 
+    if (url.includes("cloudinary.com") && url.includes("/upload/")) {
+      return url.replace("/upload/", "/upload/w_300,f_auto,q_auto/");
+    }
+
+    return url;
+  };
+
   return (
     <div ref={cardRef} className="relative group cursor-pointer">
       <div className="absolute top-3 right-3 z-10 flex flex-col items-center">
@@ -106,7 +122,7 @@ export default function ListingCard({ listing }) {
           <div className="w-full relative overflow-hidden rounded-xl aspect-[20/19] bg-gray-200">
             <img
               ref={imgRef}
-              src={listing.images && listing.images.length > 0 ? listing.images[0].url : (listing.image?.url || "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60")}
+              src={getOptimizedUrl(listing.images && listing.images.length > 0 ? listing.images[0].url : listing.image?.url)}
               className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
               loading="lazy"
               alt={listing.title}

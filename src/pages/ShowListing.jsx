@@ -342,7 +342,7 @@ export default function ShowListing() {
 
 
 
-            {currUser && (listing.owner?._id === currUser._id || currUser.role === 'admin') && (
+            {currUser && (
               <div className="border-t border-gray-200 mt-4 pt-4 flex gap-2">
                 <button onClick={handleEdit} className="flex-1 bg-gray-900 text-white text-sm font-bold py-2 rounded hover:bg-black">Edit</button>
                 <button onClick={handleDelete} className="flex-1 bg-white border border-gray-300 text-gray-900 text-sm font-bold py-2 rounded hover:bg-gray-50">Delete</button>
