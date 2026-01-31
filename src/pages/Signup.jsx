@@ -6,16 +6,16 @@ import toast from "react-hot-toast";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
-import {User,Mail,Lock,Eye,EyeOff} from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 
 export default function Signup() {
 
   const { setCurrUser } = useContext(AuthContext);
 
-const [errors, setErrors] = useState({});
-const [isSubmitted, setIsSubmitted] = useState(false);
-const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const location = useLocation();
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
@@ -57,13 +57,13 @@ const [showPassword, setShowPassword] = useState(false);
       const res = await API.post("/auth/signup", formData);
       if (res.data.user) {
         setCurrUser(res.data.user);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      toast.dismiss(loadingToast);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        toast.dismiss(loadingToast);
       }
 
       toast.success(`Welcome ${res.data.user.username}!`, { icon: '👋' });
 
-       const from = location.state?.from;
+      const from = location.state?.from;
       const redirectUrl = (from === "/login" || from === "/signup" || !from)
         ? "/listings"
         : from;
@@ -72,9 +72,9 @@ const [showPassword, setShowPassword] = useState(false);
 
 
     } catch (err) {
-     toast.dismiss(loadingToast);
-      
-      
+      toast.dismiss(loadingToast);
+
+
       const errorMsg = err.response?.data?.error || "Signup failed. Please try again.";
       toast.error(errorMsg);
       console.error("Signup process error:", err);
@@ -86,47 +86,47 @@ const [showPassword, setShowPassword] = useState(false);
       <h2 className="text-3xl text-center font-bold mb-8">Join Wanderlist</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="relative group">
-        <User className={`absolute left-0 top-3 transition-colors duration-300 ${errors.username ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
-        <input type="text" 
-        id="username"
-        placeholder="Enter Username"
-        value={formData.username} className={getInputClasses("username")} onChange={(e) => {
-          setFormData({ ...formData, username: e.target.value });
-          if (errors.username) setErrors({ ...errors, username: "" });
-        }}
-        />
-        {errors.username && <p className="text-red-500 text-xs">{errors.username}</p>}
+          <User className={`absolute left-0 top-3 transition-colors duration-300 ${errors.username ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
+          <input type="text"
+            id="username"
+            placeholder="Enter Username"
+            value={formData.username} className={getInputClasses("username")} onChange={(e) => {
+              setFormData({ ...formData, username: e.target.value });
+              if (errors.username) setErrors({ ...errors, username: "" });
+            }}
+          />
+          {errors.username && <p className="text-red-500 text-xs">{errors.username}</p>}
         </div>
 
         <div className="relative group">
-        <Mail className={`absolute left-0 top-3 transition-colors duration-300 ${errors.email ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
-        <input type="email" id="email"
-        placeholder="Enter your Email"
-        value={formData.email} className={getInputClasses("email")} onChange={(e) => {
-          setFormData({ ...formData, email: e.target.value });
-          if (errors.email) setErrors({ ...errors, email: "" });
-        }}
-        />
-        {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+          <Mail className={`absolute left-0 top-3 transition-colors duration-300 ${errors.email ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
+          <input type="email" id="email"
+            placeholder="Enter your Email"
+            value={formData.email} className={getInputClasses("email")} onChange={(e) => {
+              setFormData({ ...formData, email: e.target.value });
+              if (errors.email) setErrors({ ...errors, email: "" });
+            }}
+          />
+          {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
 
         </div>
         <div className="relative group">
-        <Lock className={`absolute left-0 top-3 transition-colors duration-300 ${errors.password ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
-        <input type={showPassword?"text":"password"}
-        placeholder="Enter your Password" 
-        id="password" className={`${getInputClasses("password")} pr-10`} onChange={(e) => {
-          setFormData({ ...formData, password: e.target.value });
-          if (errors.password) setErrors({ ...errors, password: "" });
-        }}
-        />
-        <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-0 top-3 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-        {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+          <Lock className={`absolute left-0 top-3 transition-colors duration-300 ${errors.password ? "text-red-500" : "text-gray-400 group-focus-within:text-blue-500"}`} size={20} />
+          <input type={showPassword ? "text" : "password"}
+            placeholder="Enter your Password"
+            id="password" className={`${getInputClasses("password")} pr-10`} onChange={(e) => {
+              setFormData({ ...formData, password: e.target.value });
+              if (errors.password) setErrors({ ...errors, password: "" });
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-0 top-3 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+          {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
 
         </div>
         <button className=" text-white mt-8 font-bold py-6 transition shadow-lg shadow-gray-500 hover:scale-110 hover:shadow-green-200 group relative inline-flex h-10 items-center text-sm justify-center overflow-hidden rounded bg-gray-900 hover:bg-green-800 px-6 "><span>Create
