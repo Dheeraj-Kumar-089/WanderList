@@ -62,7 +62,7 @@ export default function ListingCard({ listing }) {
 
     
     if (url.includes("images.unsplash.com")) {
-      return `${url}&w=300&auto=format,compress`;
+      return `${url}&w=400&q=70`;
     }
 
  

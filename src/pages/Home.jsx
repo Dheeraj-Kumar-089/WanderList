@@ -95,7 +95,7 @@ export default function Home() {
     if (listings.length > 0) {
       const items = gsap.utils.toArray(".listing-card-item");
 
-      
+
       items.forEach((item) => {
         const id = item.dataset.id;
         if (id && !animatedIds.current.has(id)) {
@@ -107,11 +107,11 @@ export default function Home() {
         start: "top 90%",
         interval: 0.15,
         onEnter: (batch) => {
-          
+
           const toAnimate = batch.filter(el => !animatedIds.current.has(el.dataset.id));
 
           if (toAnimate.length > 0) {
-           
+
             toAnimate.forEach(el => animatedIds.current.add(el.dataset.id));
 
             gsap.to(toAnimate, {
@@ -126,9 +126,9 @@ export default function Home() {
           }
         },
         onLeaveBack: (batch) => {
-         
+
           gsap.set(batch, { opacity: 0, y: 50, scale: 0.95, overwrite: true });
-        
+
           batch.forEach(el => animatedIds.current.delete(el.dataset.id));
         }
       });
@@ -165,7 +165,7 @@ export default function Home() {
           )}
         </div>
 
-        {loading && (<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading Items...   &nbsp;
+        {loading && (<div className={`flex justify-center items-center ${listings.length > 0 ? "py-10" : "h-[70vh]"} text-3xl font-mono`}>Loading Items...   &nbsp;
 
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>)
