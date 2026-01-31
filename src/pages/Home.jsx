@@ -133,7 +133,7 @@ export default function Home() {
         }
       });
     }
-  }, { scope: gridRef, dependencies: [listings] }); // Re-run when listings change
+  }, { scope: gridRef, dependencies: [listings] }); 
 
 
 

@@ -4,7 +4,7 @@ import gsap from "gsap";
 import toast from "react-hot-toast";
 import API from "../api";
 import { AuthContext } from "../context/AuthContext";
-import { useGSAP } from "@gsap/react";
+
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);

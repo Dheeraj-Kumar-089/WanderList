@@ -92,10 +92,14 @@ export default function ShowListing() {
   };
 
   useEffect(() => {
-    API.get(`listings/${id}`)
-      .then(res => setListing(res.data))
-      .catch(err => console.error(err));
-  }, [id]);
+    fetchListing();
+
+    const interval = setInterval(() => {
+      fetchListing();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [id, currUser]);
 
 
   useGSAP(() => {
@@ -144,9 +148,10 @@ export default function ShowListing() {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const loadingToast = toast.loading("Submitting your review...");
 
-    // Default to 1 star if no rating selected (user requested fix)
+
     const finalRating = reviewForm.rating === 0 ? 1 : reviewForm.rating;
     const finalReview = { ...reviewForm, rating: finalRating };
 
@@ -176,7 +181,8 @@ export default function ShowListing() {
       await API.delete(`/listings/${id}/reviews/${reviewId}`, {
         withCredentials: true
       });
-      window.location.reload();
+      fetchListing();
+      toast.success("Review deleted");
     } catch (err) {
       alert("Cannot delete review");
     }
@@ -292,7 +298,7 @@ export default function ShowListing() {
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold text-xs">{r.author?.username?.[0]?.toUpperCase() || "U"}</div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-sm">{r.author?.username || "Guest"}</span>
+                        <span className="font-bold text-sm">@{r.author?.username || "Guest"}</span>
                         <span className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleDateString("en-IN", {
                           day: 'numeric',
                           month: 'short'

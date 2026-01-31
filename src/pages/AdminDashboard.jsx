@@ -26,7 +26,15 @@ export default function AdminDashboard() {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData(); 
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 10000); 
+
+    return () => clearInterval(interval);
+  }, []);
 
 
   const handleAction = async (id, action, isReview = false) => {
@@ -35,9 +43,9 @@ export default function AdminDashboard() {
 
     try {
       if (action === 'approve') {
-        await API.patch(url, {}, { withCredentials: true }); //
+        await API.patch(url, {}, { withCredentials: true }); 
       } else {
-        await API.delete(url, { withCredentials: true }); //
+        await API.delete(url, { withCredentials: true }); 
       }
 
       alert(`${isReview ? 'Review' : 'Listing'} ${action}d successfully!`);
