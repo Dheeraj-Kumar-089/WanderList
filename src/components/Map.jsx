@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"; // 1. useState add kiya
+import React, { useEffect, useRef, useState } from "react"; 
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
