@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import Loader from "../components/Loader";
 import toast from "react-hot-toast";
 import API from "../api";
 export default function EditListing() {
@@ -62,7 +63,7 @@ export default function EditListing() {
     return Object.keys(newErrors).length === 0;
   };
 
-    const indianStates = [
+  const indianStates = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
     "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
     "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
@@ -70,8 +71,8 @@ export default function EditListing() {
     "Uttarakhand", "West Bengal", "Delhi", "Jammu and Kashmir", "Ladakh", "Puducherry", "Chandigarh", "Andaman and Nicobar Islands", "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep"
   ].sort();
 
-  
-   const getInputClasses = (fieldName) => {
+
+  const getInputClasses = (fieldName) => {
     const baseClasses = "border p-4 rounded outline-none transition-all duration-300";
 
     if (errors[fieldName]) {
@@ -125,9 +126,7 @@ export default function EditListing() {
   };
 
   if (!listing) {
-    return(<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading...   &nbsp;
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-    </div>);
+    return <Loader className="h-screen w-full" />;
   }
 
   return (

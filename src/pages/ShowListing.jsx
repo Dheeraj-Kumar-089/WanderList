@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import toast from "react-hot-toast";
+import Loader from "../components/Loader";
 import API from "../api";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -189,10 +190,7 @@ export default function ShowListing() {
   };
 
   if (!listing) {
-    return (<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading...   &nbsp;
-
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-    </div>);
+    return <Loader className="h-screen w-full" />;
   }
 
 

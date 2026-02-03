@@ -6,6 +6,7 @@ import StateFilter from "../components/StateFilter";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Loader from "../components/Loader";
 
 
 export default function Home() {
@@ -133,7 +134,7 @@ export default function Home() {
         }
       });
     }
-  }, { scope: gridRef, dependencies: [listings] }); 
+  }, { scope: gridRef, dependencies: [listings] });
 
 
 
@@ -165,11 +166,7 @@ export default function Home() {
           )}
         </div>
 
-        {loading && (<div className={`flex justify-center items-center ${listings.length > 0 ? "py-10" : "h-[70vh]"} text-3xl font-mono`}>Loading Items...   &nbsp;
-
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-        </div>)
-        }
+        {loading && <Loader className={listings.length > 0 ? "py-10" : "h-[70vh]"} />}
 
 
         {!loading && hasMore && listings.length > 0 && (

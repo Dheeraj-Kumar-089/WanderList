@@ -5,7 +5,6 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from 'react-hot-toast';
 
-// Lazy load page components
 const Home = lazy(() => import("./pages/Home"));
 const ShowListing = lazy(() => import("./pages/ShowListing"));
 const NewListing = lazy(() => import("./pages/NewListing"));
@@ -15,11 +14,11 @@ const Signup = lazy(() => import("./pages/Signup"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 
-// Simple loading component
+
+import Loader from "./components/Loader";
+
 const PageLoader = () => (
-  <div className="flex justify-center items-center h-[70vh]">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-  </div>
+  <Loader className="h-[70vh]" />
 );
 
 export default function App() {

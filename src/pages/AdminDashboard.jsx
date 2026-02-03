@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../api";
+import Loader from "../components/Loader";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("listings");
@@ -27,13 +28,7 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchData(); 
-
-    const interval = setInterval(() => {
-      fetchData();
-    }, 10000); 
-
-    return () => clearInterval(interval);
+    fetchData();
   }, []);
 
 
@@ -43,9 +38,9 @@ export default function AdminDashboard() {
 
     try {
       if (action === 'approve') {
-        await API.patch(url, {}, { withCredentials: true }); 
+        await API.patch(url, {}, { withCredentials: true });
       } else {
-        await API.delete(url, { withCredentials: true }); 
+        await API.delete(url, { withCredentials: true });
       }
 
       alert(`${isReview ? 'Review' : 'Listing'} ${action}d successfully!`);
@@ -68,10 +63,7 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return (<div className="flex justify-center items-center h-screen text-3xl font-mono">Loading Admin Panel...   &nbsp;
-
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-    </div>);
+    return <Loader className="h-screen w-full" />;
   }
   return (
     <div className="max-w-6xl mx-auto p-6 mt-20">
