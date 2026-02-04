@@ -2,6 +2,8 @@
 
 **WanderList** is a full-stack web application of travelling app Airbnb. It features a robust backend handling authentication and data management, paired with a modern, responsive frontend.
 
+🚀 **Live Demo:** [Check it out here](https://wanderlists.vercel.app)
+
 ## 🚀 Tech Stack
 
 ### Backend
@@ -35,8 +37,6 @@ The backend is built with a scalable **MVC (Model-View-Controller)** architectur
 
 *   **Authentication & Authorization**:
     *   Secure user signup and login functionality using **Passport.js**.
-    *   **Protected Routes**: Middleware (`isLoggedIn`) ensures only authenticated users can create or modify content.
-    *   **Role-Based Access**: Authorization middleware (`isOwner`, `isReviewAuthor`) restricts edit/delete actions to the original creators.
 *   **Comprehensive CRUD Operations**:
     *   **Listings**: Create, Read, Update, and Delete travel listings with images and details.
     *   **Reviews**: Users can add and delete reviews for listings.
@@ -67,8 +67,7 @@ Follow these steps to run the project locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
-cd unique-destinations
+git clone https://github.com/Dheeraj-Kumar-089/WanderList
 ```
 
 ### 2. Backend Setup
@@ -77,16 +76,6 @@ Navigate to the backend directory (or root if served from there) and install dep
 ```bash
 cd backend
 npm install
-```
-
-Create a `.env` file in the `backend` directory with the following variables:
-
-```env
-ATLASDB_URL=your_mongodb_connection_string
-SECRET=your_session_secret
-CLOUD_NAME=your_cloudinary_cloud_name
-CLOUD_API_KEY=your_cloudinary_api_key
-CLOUD_API_SECRET=your_cloudinary_api_secret
 ```
 
 Start the backend server:
@@ -116,4 +105,4 @@ Visit the application in your browser (usually at `http://localhost:5173`).
 
 ---
 
-*Developed with ❤️ by [Your Name]*
+*Developed with ❤️ by [Dheeraj]*
