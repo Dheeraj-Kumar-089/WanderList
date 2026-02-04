@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: import.meta.env.MODE === "production"
-    ? "https://wanderlist-77wx.onrender.com/api"
+    ? "https://wander-list-backend.vercel.app/api"
     : "http://localhost:8080/api",
   withCredentials: true,
   timeout: 30000,
@@ -15,7 +15,7 @@ API.interceptors.response.use(null, async (error) => {
     config.retry = 0;
   }
 
- 
+
   if (config.retry < 3 && (message === "Network Error" || error.code === "ECONNABORTED" || error.response?.status >= 500)) {
     config.retry += 1;
     console.log(`Retrying request... (${config.retry}/3)`);
