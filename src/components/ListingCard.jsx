@@ -81,7 +81,7 @@ export default function ListingCard({ listing }) {
             e.preventDefault();
             e.stopPropagation();
             if (!currUser) {
-              return toast.error("Please login to like listings!");
+              return toast.error("Please login to like!");
             }
 
             const newLikedState = !isLiked;

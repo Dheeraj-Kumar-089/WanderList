@@ -210,7 +210,7 @@ export default function ShowListing() {
           <div className="flex justify-center ml-auto align-center">
             <button
               onClick={async () => {
-                if (!currUser) return toast.error("Login to map!");
+                if (!currUser) return toast.error("Login to like!");
 
                 const newLikedState = !isLiked;
                 setIsLiked(newLikedState);

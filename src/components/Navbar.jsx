@@ -21,7 +21,7 @@ export default function Navbar() {
     if (searchQuery.trim()) {
 
       navigate(`/?state=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery(""); 
+      setSearchQuery("");
     }
   };
 
@@ -96,7 +96,7 @@ export default function Navbar() {
             <span className="hidden lg:block text-rose-500 font-extrabold text-2xl tracking-tight font-heading">WanderList</span>
           </Link>
 
-         
+
           <div className="hidden md:flex items-center bg-white border border-gray-200 rounded-full py-2.5 px-4 shadow-sm hover:shadow-md transition-shadow duration-300 gap-3 w-[360px] focus-within:ring-2 focus-within:ring-rose-100 focus-within:border-rose-300">
             <input
               type="text"
@@ -143,7 +143,7 @@ export default function Navbar() {
                   </Link>
                 )}
 
-                
+
                 <div className="relative">
                   <div
                     className="flex items-center gap-3 border border-gray-200 pl-2 pr-4 py-1.5 rounded-full hover:shadow-md transition cursor-pointer bg-white"
@@ -156,14 +156,14 @@ export default function Navbar() {
                     <span className="text-gray-700 font-medium">{currUser.username}</span>
                   </div>
 
-     
+
                   {isUserDropdownOpen && (
                     <>
-                      
+
                       <div className="fixed inset-0 z-[55] cursor-default" onClick={() => setIsUserDropdownOpen(false)}></div>
 
                       <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
-                        
+
                         <div className="px-4 py-4 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
                           <div className="bg-gray-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
                             {currUser.username.charAt(0).toUpperCase()}
@@ -174,10 +174,10 @@ export default function Navbar() {
                           </div>
                         </div>
 
-                       
+
                         <button
                           onClick={() => { handleLogout(); }}
-                          className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-rose-50 transition-colors flex items-center gap-2 font-medium"
+                          className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-rose-50 transition-colors flex items-center gap-2 font-medium cursor-pointer"
                         >
                           <i className="fa-solid fa-arrow-right-from-bracket"></i>
                           Log out
@@ -245,7 +245,7 @@ export default function Navbar() {
                 </Link>
               )}
               <button onClick={handleLogout}
-                className="bg-red-600/80 hover:bg-red-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95">
+                className="bg-red-600/80 hover:bg-red-600 text-white py-4 rounded font-bold shadow-lg transition-all active:scale-95 cursor-pointer">
                 Logout
               </button>
             </div>
