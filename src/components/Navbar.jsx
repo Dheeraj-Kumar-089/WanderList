@@ -93,7 +93,7 @@ export default function Navbar() {
             <div className="text-rose-500 text-3xl transition-transform duration-300 group-hover:rotate-[360deg] group-hover:scale-110">
               <i className="fa-regular fa-compass"></i>
             </div>
-            <span className="hidden lg:block text-rose-500 font-extrabold text-2xl tracking-tight font-heading">WanderList</span>
+            <span className="text-rose-500 font-extrabold text-2xl tracking-tight font-heading">WanderList</span>
           </Link>
 
 
