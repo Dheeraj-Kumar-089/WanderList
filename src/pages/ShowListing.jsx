@@ -94,12 +94,6 @@ export default function ShowListing() {
 
   useEffect(() => {
     fetchListing();
-
-    const interval = setInterval(() => {
-      fetchListing();
-    }, 30000);
-
-    return () => clearInterval(interval);
   }, [id, currUser]);
 
 

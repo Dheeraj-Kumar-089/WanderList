@@ -1,6 +1,6 @@
 # WanderList
 
-**WanderList** is a full-stack mock website of travelling app Airbnb. It features a robust backend handling authentication and data management, paired with a modern, responsive frontend.
+**WanderList** is a full-stack clone website of travelling app Airbnb. It features a robust backend handling authentication and data management, paired with a modern, responsive frontend.
 
 🚀 **Live Demo:** [Check it out here](https://wanderlists.vercel.app)
 
