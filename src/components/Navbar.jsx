@@ -115,9 +115,19 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex gap-4 font-semibold text-sm items-center">
-            <Link to="/listings/new" className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-full hover:bg-gray-100 transition-all duration-200">
-              Switch to hosting
-            </Link>
+            <div
+              onClick={() => {
+                if (!currUser) {
+                  toast.error("Please login to add a destination!");
+                  navigate("/login");
+                } else {
+                  navigate("/listings/new");
+                }
+              }}
+              className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-full hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+            >
+              Add Destination
+            </div>
 
             {!currUser ? (
               <>

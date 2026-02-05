@@ -147,11 +147,28 @@ export default function ShowListing() {
 
 
 
+  const [errors, setErrors] = useState({});
+
+  const validateReview = () => {
+    const newErrors = {};
+    if (!reviewForm.rating || reviewForm.rating === 0) newErrors.rating = "Please select a star rating";
+    if (!reviewForm.comment.trim()) newErrors.comment = "Review cannot be empty";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const loadingToast = toast.loading("Submitting your review...");
 
+    if (!currUser) {
+      toast.error("Please login to leave a review");
+      return;
+    }
+
+    if (!validateReview()) return;
+
+    const loadingToast = toast.loading("Submitting your review...");
 
     const finalRating = reviewForm.rating === 0 ? 1 : reviewForm.rating;
     const finalReview = { ...reviewForm, rating: finalRating };
@@ -169,11 +186,13 @@ export default function ShowListing() {
           duration: 4000
         });
       }
-      setReviewForm({ rating: 1, comment: "" }); // 
+      setReviewForm({ rating: 1, comment: "" });
+      setErrors({});
       fetchListing();
 
     } catch (err) {
-      alert("Error adding review. Please login.");
+      toast.dismiss(loadingToast);
+      toast.error(err.response?.data?.error || "Error adding review. Please login.");
     }
   };
 
@@ -260,33 +279,39 @@ export default function ShowListing() {
 
 
           <div className="py-8">
-            {currUser && (
-              <form onSubmit={handleReviewSubmit} className="mb-10 bg-gray-50 p-6 rounded-xl border border-gray-100">
-                <h4 className="font-bold text-lg mb-4">Leave a Review</h4>
-                <fieldset className="starability-slot mb-3">
+            <form onSubmit={handleReviewSubmit} className="mb-10 bg-gray-50 p-6 rounded-xl border border-gray-100">
+              <h4 className="font-bold text-lg mb-4">Leave a Review</h4>
+              <div className="mb-3">
+                <fieldset className="starability-slot">
                   <input type="radio" id="no-rate" className="input-no-rate" name="rating" value="1" checked={reviewForm.rating === 0} onChange={() => { }} aria-label="No rating." />
-                  <input type="radio" id="rate1" name="rating" value="1" checked={reviewForm.rating === 1} onChange={() => setReviewForm({ ...reviewForm, rating: 1 })} />
+                  <input type="radio" id="rate1" name="rating" value="1" checked={reviewForm.rating === 1} onChange={() => { setReviewForm({ ...reviewForm, rating: 1 }); if (errors.rating) setErrors({ ...errors, rating: "" }); }} />
                   <label htmlFor="rate1" title="Terrible">1 star</label>
-                  <input type="radio" id="rate2" name="rating" value="2" checked={reviewForm.rating === 2} onChange={() => setReviewForm({ ...reviewForm, rating: 2 })} />
+                  <input type="radio" id="rate2" name="rating" value="2" checked={reviewForm.rating === 2} onChange={() => { setReviewForm({ ...reviewForm, rating: 2 }); if (errors.rating) setErrors({ ...errors, rating: "" }); }} />
                   <label htmlFor="rate2" title="Not good">2 stars</label>
-                  <input type="radio" id="rate3" name="rating" value="3" checked={reviewForm.rating === 3} onChange={() => setReviewForm({ ...reviewForm, rating: 3 })} />
+                  <input type="radio" id="rate3" name="rating" value="3" checked={reviewForm.rating === 3} onChange={() => { setReviewForm({ ...reviewForm, rating: 3 }); if (errors.rating) setErrors({ ...errors, rating: "" }); }} />
                   <label htmlFor="rate3" title="Average">3 stars</label>
-                  <input type="radio" id="rate4" name="rating" value="4" checked={reviewForm.rating === 4} onChange={() => setReviewForm({ ...reviewForm, rating: 4 })} />
+                  <input type="radio" id="rate4" name="rating" value="4" checked={reviewForm.rating === 4} onChange={() => { setReviewForm({ ...reviewForm, rating: 4 }); if (errors.rating) setErrors({ ...errors, rating: "" }); }} />
                   <label htmlFor="rate4" title="Very good">4 stars</label>
-                  <input type="radio" id="rate5" name="rating" value="5" checked={reviewForm.rating === 5} onChange={() => setReviewForm({ ...reviewForm, rating: 5 })} />
+                  <input type="radio" id="rate5" name="rating" value="5" checked={reviewForm.rating === 5} onChange={() => { setReviewForm({ ...reviewForm, rating: 5 }); if (errors.rating) setErrors({ ...errors, rating: "" }); }} />
                   <label htmlFor="rate5" title="Amazing">5 stars</label>
                 </fieldset>
+                {errors.rating && <p className="text-red-500 text-xs mt-1">{errors.rating}</p>}
+              </div>
+              <div>
                 <textarea
-                  required
-                  className="w-full border p-3 rounded-lg mb-4 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none"
+                  className={`w-full border p-3 rounded-lg mb-1 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none ${errors.comment ? "border-red-500" : "border-gray-200"}`}
                   rows="3"
                   placeholder="Share your experience..."
                   value={reviewForm.comment}
-                  onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                  onChange={(e) => {
+                    setReviewForm({ ...reviewForm, comment: e.target.value });
+                    if (errors.comment) setErrors({ ...errors, comment: "" });
+                  }}
                 ></textarea>
-                <button className="bg-black text-white px-6 py-2 rounded-lg font-bold text-sm hover:opacity-80 transition">Submit Review</button>
-              </form>
-            )}
+                {errors.comment && <p className="text-red-500 text-xs mb-4">{errors.comment}</p>}
+              </div>
+              <button className="bg-black text-white px-6 py-2 rounded-lg font-bold text-sm hover:opacity-80 transition mt-2">Submit Review</button>
+            </form>
 
             {listing.reviews && listing.reviews.length > 0 ? (
               <div className="grid grid-cols-1 gap-6">

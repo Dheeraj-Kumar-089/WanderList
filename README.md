@@ -1,34 +1,8 @@
 # WanderList
 
-**WanderList** is a full-stack web application of travelling app Airbnb. It features a robust backend handling authentication and data management, paired with a modern, responsive frontend.
+**WanderList** is a full-stack mock website of travelling app Airbnb. It features a robust backend handling authentication and data management, paired with a modern, responsive frontend.
 
 🚀 **Live Demo:** [Check it out here](https://wanderlists.vercel.app)
-
-## 🚀 Tech Stack
-
-### Backend
-*   **Runtime Environment**: Node.js
-*   **Framework**: Express.js
-*   **Database**: MongoDB (Atlas) with Mongoose ODM
-*   **Authentication**: Passport.js (Local Strategy)
-*   **Image Storage**: Cloudinary with Multer
-*   **Validation**: Joi (Server-side validation)
-*   **Session Management**: Express Session & Connect Mongo
-
-### Frontend
-*   **Framework**: React (Vite)
-*   **Styling**: Tailwind CSS
-*   **HTTP Client**: Axios
-*   **Routing**: React Router DOM
-*   **Notifications**: React Hot Toast
-*   **State Management**: React Context API
-*   **NotFound Page**: Custom 404 Not Found Page
-*   **Protected Routes**: Client-side route protection redirects unauthenticated users.
-*   **Admin Dashboard**: Dedicated dashboard accessible for administrative tasks.
-*   **Like System**: Interactive "Like" functionality for users to save their favorite destinations.
-*   **Search & Filtering**: Integrated functionality to filter listings by states.
-
-
 
 ## ✨ Features
 
@@ -56,6 +30,26 @@ The backend is built with a scalable **MVC (Model-View-Controller)** architectur
 *   **Navigation & Routing**:
     *   **Protected Routes**: Client-side route protection redirects unauthenticated users.
 
+
+## 🚀 Tech Stack
+
+### Backend
+*   **Runtime Environment**: Node.js
+*   **Framework**: Express.js
+*   **Database**: MongoDB (Atlas) with Mongoose ODM
+*   **Authentication**: Passport.js (Local Strategy)
+*   **Image Storage**: Cloudinary with Multer
+*   **Validation**: Joi (Server-side validation)
+*   **Session Management**: Express Session & Connect Mongo
+
+### Frontend
+*   **Framework**: React (Vite)
+*   **Styling**: Tailwind CSS
+*   **HTTP Client**: Axios
+*   **Notifications**: React Hot Toast
+*   **State Management**: React Context API
+
+
 ## 🛠️ Installation & Setup
 
 Follow these steps to run the project locally.
@@ -76,6 +70,17 @@ Navigate to the backend directory (or root if served from there) and install dep
 ```bash
 cd backend
 npm install
+```
+
+
+Create a `.env` file in the `backend` directory with the following variables:
+
+```env
+ATLASDB_URL=your_mongodb_connection_string
+SECRET=your_session_secret
+CLOUD_NAME=your_cloudinary_cloud_name
+CLOUD_API_KEY=your_cloudinary_api_key
+CLOUD_API_SECRET=your_cloudinary_api_secret
 ```
 
 Start the backend server:
@@ -102,7 +107,3 @@ npm run dev
 ```
 
 Visit the application in your browser (usually at `http://localhost:5173`).
-
----
-
-*Developed with ❤️ by [Dheeraj]*
